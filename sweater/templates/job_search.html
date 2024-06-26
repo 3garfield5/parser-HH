@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск вакансий</title>
+</head>
+<body>
+    <div>
+        <form method="post">
+            <input type="text" name="job" placeholder="Название должности">
+            <input type="text" name="region" placeholder="Регион">
+            <input type="text" name="skills" placeholder="Навыки">
+            <input type="text" name="work exp" placeholder="Опыт работы">
+            <select name="busyness">
+                <option>Полная занятость</option>
+                <option>Частичная занятость</option>
+                <option>Проектная работа</option>
+                <option>Волонтерство</option>
+                <option>Стажировка</option>
+            </select>
+            <select name="chart">
+                <option>Полный день</option>
+                <option>Сменный график</option>
+                <option>Гибкий график</option>
+                <option>Удаленная работа</option>
+                <option>Вахтовый метод</option>
+            </select>
+            <input type="submit">
+        </form>
+    </div>
+    <a href="/">Вернуться на главную</a>
+    <div>
+        {% if request.method == 'POST'%}
+            {% for block in range(count) %}
+                <div>
+                    <p>Вакансия: {{ jobs['name'] }}</p>
+                    <p>Зарплата: {{ jobs['salary'] }}</p>
+                    <p>Гарфик: {{ jobs['chart'] }}</p>
+                    <p>Умения: {{ jobs['skills'] }}</p>
+                    <p>Адрес: {{ jobs['address'] }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>

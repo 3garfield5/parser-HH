@@ -1,4 +1,5 @@
 from flask import render_template, request
+import time
 
 from sweater import db, app
 from sweater.parser import get_links, get_job
@@ -31,13 +32,14 @@ def job_search():
                 temp = [key, value]
                 data.append(temp)
 
-            if count == 100: # ограничение на количество вакансий, из-за долгой прогрузки
+            if count == 5: # ограничение на количество вакансий, из-за долгой прогрузки
                 break
         len_jobs = len(data)
 
         #добавление данных в бд
         for i in range(0, len_jobs, 6):
             name = data[i][1]
+
             salary = data[i+1][1]
 
             work_experience = data[i+2][1]
@@ -46,8 +48,8 @@ def job_search():
 
             ski = data[i+4][1]
 
-
             address = data[i+5][1]
+
             vac = Vacancy(name=name, salary=salary, work_experience=work_experience, chart=charts, skills=ski, address=address)
             db.session.add(vac)
             db.session.commit()
@@ -70,21 +72,23 @@ def job_search():
             work_experience_f = []
             id_del = [] #фильтр
             for i in range(len(id)):
-                if region != region_list[i]:
-                    id_del.append(i+1)
+                if region != '':
+                    if region != region_list[i]:
+                        id_del.append(i+1)
 
-                if skills not in skills_list[i]:
-                    id_del.append(i + 1)
-
-                if '–' in experience_list[i]:
-                    for j in range(int(experience_list[i][0]), int(experience_list[i][2])):
-                        work_experience_f.append(j)
-                    if int(work_exp) not in work_experience_f:
+                if skills != '':
+                    if skills not in skills_list[i]:
                         id_del.append(i + 1)
-
-                chart_list[i] = list(chart_list[i].split(', '))
-                if (busyness not in chart_list[i][0]) or (chart not in chart_list[i][1]):
-                    id_del.append(i + 1)
+                if work_exp != '':
+                    if '–' in experience_list[i]:
+                        for j in range(int(experience_list[i][0]), int(experience_list[i][2])):
+                            work_experience_f.append(j)
+                        if int(work_exp) not in work_experience_f:
+                            id_del.append(i + 1)
+                if chart != '':
+                    chart_list[i] = list(chart_list[i].split(', '))
+                    if (busyness not in chart_list[i][0]) or (chart not in chart_list[i][1]):
+                        id_del.append(i + 1)
             id_del = set(id_del)
 
             for i in id_del:
@@ -109,7 +113,8 @@ def job_search():
                                    skills_list=skills_list, experience_list=experience_list, chart_list=chart_list, id=len(id), one=one, two=two)
         return render_template('job_search.html', data=data, count=count, len_jobs=len_jobs, one=one, two=two)
 
-
+    db.drop_all()
+    db.create_all()
     return render_template('job_search.html')
 
 @app.route('/job_seeker_search')

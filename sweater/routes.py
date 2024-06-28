@@ -1,5 +1,4 @@
 from flask import render_template, request
-import time
 
 from sweater import db, app
 from sweater.parser import get_links, get_job
@@ -55,7 +54,7 @@ def job_search():
             db.session.commit()
 
 
-        if one is None and two is not None:
+        if one is None and two is not None: #разделение по нажатиям кнопок, чтобы не срабатывали функции, которые должны выполняться при нажатии на другую кнопку
             db_region = db.session.query(Vacancy)
             id = list(map(lambda x: x.id, db_region))
             region_list = list(map(lambda x: x.address, db_region))
@@ -68,35 +67,40 @@ def job_search():
 
             db_chart = db.session.query(Vacancy)
             chart_list = list(map(lambda x: x.chart, db_chart))
+            # создаем списки, где лежат данные из БД, чтобы их отфильтровать
 
+            # фильтр
             work_experience_f = []
-            id_del = [] #фильтр
+            id_del = [] # создаем список, где будут лежать айдишки вакансий, которые нужно убрать при фильтрации
             for i in range(len(id)):
-                if region != '':
+                if region != '': # проверка ну пустоту
                     if region != region_list[i]:
                         id_del.append(i+1)
 
-                if skills != '':
+                if skills != '': # проверка ну пустоту
                     if skills not in skills_list[i]:
                         id_del.append(i + 1)
-                if work_exp != '':
+
+                if work_exp != '': # проверка ну пустоту
                     if '–' in experience_list[i]:
                         for j in range(int(experience_list[i][0]), int(experience_list[i][2])):
                             work_experience_f.append(j)
                         if int(work_exp) not in work_experience_f:
                             id_del.append(i + 1)
-                if chart != '':
+
+                if chart != '': # проверка ну пустоту
                     chart_list[i] = list(chart_list[i].split(', '))
                     if (busyness not in chart_list[i][0]) or (chart not in chart_list[i][1]):
                         id_del.append(i + 1)
-            id_del = set(id_del)
+            id_del = set(id_del) # делаем из списка множество
 
+            # удаляем ненужные вакансии
             for i in id_del:
                 del_res = db.session.query(Vacancy).filter(Vacancy.id == i).first()
                 db.session.delete(del_res)
                 db.session.commit()
 
-
+            # получаем из БД оставшиеся вакансии, чтобы вывести их на страницу
             db_data_filt = db.session.query(Vacancy)
 
             id = list(map(lambda x: x.id, db_data_filt))
@@ -113,8 +117,8 @@ def job_search():
                                    skills_list=skills_list, experience_list=experience_list, chart_list=chart_list, id=len(id), one=one, two=two)
         return render_template('job_search.html', data=data, count=count, len_jobs=len_jobs, one=one, two=two)
 
-    db.drop_all()
-    db.create_all()
+    db.drop_all() # очистка БД
+    db.create_all() # создание новой таблицы БД
     return render_template('job_search.html')
 
 @app.route('/job_seeker_search')

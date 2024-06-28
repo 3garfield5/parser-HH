@@ -8,38 +8,58 @@
     <div>
         <form method="post">
             <input type="text" name="job" placeholder="Название должности">
-            <input type="text" name="region" placeholder="Регион">
-            <input type="text" name="skills" placeholder="Навыки">
-            <input type="text" name="work exp" placeholder="Опыт работы">
-            <select name="busyness">
-                <option>Полная занятость</option>
-                <option>Частичная занятость</option>
-                <option>Проектная работа</option>
-                <option>Волонтерство</option>
-                <option>Стажировка</option>
-            </select>
-            <select name="chart">
-                <option>Полный день</option>
-                <option>Сменный график</option>
-                <option>Гибкий график</option>
-                <option>Удаленная работа</option>
-                <option>Вахтовый метод</option>
-            </select>
-            <input type="submit">
+            <input name="1" type="submit">
         </form>
     </div>
     <a href="/">Вернуться на главную</a>
     <div>
-        {% if request.method == 'POST'%}
-            {% for block in range(count) %}
-                <div>
-                    <p>Вакансия: {{ jobs['name'] }}</p>
-                    <p>Зарплата: {{ jobs['salary'] }}</p>
-                    <p>Гарфик: {{ jobs['chart'] }}</p>
-                    <p>Умения: {{ jobs['skills'] }}</p>
-                    <p>Адрес: {{ jobs['address'] }}</p>
-                </div>
-            {% endfor %}
+        {% if request.method == 'POST' %}
+            {% if one == 'Отправить'%}
+                 <form method="post">
+                    <input type="text" name="region" placeholder="Регион">
+                    <input type="text" name="skills" placeholder="Навыки">
+                    <input type="text" name="work exp" placeholder="Опыт работы">
+                    <select name="busyness">
+                        <option>Полная занятость</option>
+                        <option>Частичная занятость</option>
+                        <option>Проектная работа</option>
+                        <option>Волонтерство</option>
+                        <option>Стажировка</option>
+                    </select>
+                    <select name="chart">
+                        <option>полный день</option>
+                        <option>сменный график</option>
+                        <option>гибкий график</option>
+                        <option>удаленная работа</option>
+                        <option>вахтовый метод</option>
+                    </select>
+                    <input name='2' type="submit">
+                </form>
+
+                {% for i in range(0, len_jobs,6)%}
+                    <div>
+                        <p>Блок: {{ i / 6}}</p>
+                        <p>Вакансия: {{ data[i][1] }}</p>
+                        <p>Зарпалата: {{ data[i+1][1] }}</p>
+                        <p>Опыт работы: {{ data[i+2][1] }}</p>
+                        <p>График: {{ data[i+3][1] }}</p>
+                        <p>Скилы: {{ data[i+4][1] }}</p>
+                        <p>Регион: {{ data[i+5][1] }}</p>
+                    </div>
+                {% endfor %}
+            {% endif%}
+            {% if two == 'Отправить' %}
+                {% for i in range(id) %}
+                    <div>
+                        <p>Вакансия: {{ name_list[i] }}</p>
+                        <p>Зарпалата: {{ salary_list[i] }}</p>
+                        <p>Опыт работы: {{ experience_list[i] }}</p>
+                        <p>График: {{ chart_list[i] }}</p>
+                        <p>Скилы: {{ skills_list[i] }}</p>
+                        <p>Регион: {{ region_list[i] }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
         {% endif %}
     </div>
 </body>

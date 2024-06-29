@@ -31,7 +31,7 @@ def job_search():
                 temp = [key, value]
                 data.append(temp)
 
-            if count == 5: # ограничение на количество вакансий, из-за долгой прогрузки
+            if count == 20: # ограничение на количество вакансий, из-за долгой прогрузки
                 break
         len_jobs = len(data)
 
@@ -73,26 +73,26 @@ def job_search():
             work_experience_f = []
             id_del = [] # создаем список, где будут лежать айдишки вакансий, которые нужно убрать при фильтрации
             for i in range(len(id)):
-                if region != '': # проверка ну пустоту
+                if region != '': # проверка на пустоту
                     if region != region_list[i]:
                         id_del.append(i+1)
 
-                if skills != '': # проверка ну пустоту
+                if skills != '': # проверка на пустоту
                     if skills not in skills_list[i]:
                         id_del.append(i + 1)
 
-                if work_exp != '': # проверка ну пустоту
+                if work_exp != '': # проверка на пустоту
                     if '–' in experience_list[i]:
                         for j in range(int(experience_list[i][0]), int(experience_list[i][2])):
                             work_experience_f.append(j)
                         if int(work_exp) not in work_experience_f:
                             id_del.append(i + 1)
 
-                if chart != '': # проверка ну пустоту
+                if chart != '': # проверка на пустоту
                     chart_list[i] = list(chart_list[i].split(', '))
                     if (busyness not in chart_list[i][0]) or (chart not in chart_list[i][1]):
                         id_del.append(i + 1)
-            id_del = set(id_del) # делаем из списка множество
+            id_del = set(id_del) # делаем из списка множество, чтобы убрать повторы
 
             # удаляем ненужные вакансии
             for i in id_del:
@@ -111,16 +111,11 @@ def job_search():
             experience_list = list(map(lambda x: x.work_experience, db_data_filt))
             chart_list = list(map(lambda x: x.chart, db_data_filt))
 
-
+            db.drop_all()  # очистка БД
+            db.create_all()  # создание новой таблицы БД
 
             return render_template('job_search.html', name_list=name_list, salary_list=salary_list, region_list=region_list, \
                                    skills_list=skills_list, experience_list=experience_list, chart_list=chart_list, id=len(id), one=one, two=two)
         return render_template('job_search.html', data=data, count=count, len_jobs=len_jobs, one=one, two=two)
 
-    db.drop_all() # очистка БД
-    db.create_all() # создание новой таблицы БД
     return render_template('job_search.html')
-
-@app.route('/job_seeker_search')
-def job_seeker_search():
-    return render_template('job_seeker_search.html')

@@ -3,42 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Поиск вакансий</title>
+    <link rel="stylesheet" href="static/style/job.css">
 </head>
 <body>
     <div>
         <form method="post">
-            <input type="text" name="job" placeholder="Название должности">
-            <input name="1" type="submit">
+            <input type="text" class="input" name="job" placeholder="Название должности">
+            <input name="1" class="one" type="submit">
         </form>
     </div>
-    <a href="/">Вернуться на главную</a>
+    <a href="/" class="button">Вернуться на главную</a>
     <div>
         {% if request.method == 'POST' %}
             {% if one == 'Отправить'%}
                  <form method="post">
-                    <input type="text" name="region" placeholder="Регион">
-                    <input type="text" name="skills" placeholder="Навыки">
-                    <input type="text" name="work exp" placeholder="Опыт работы">
-                    <select name="busyness">
+                    <input type="text" class="region" name="region" placeholder="Регион">
+                    <input type="text" class="skills" name="skills" placeholder="Навыки">
+                    <input type="text" class="work_exp" name="work exp" placeholder="Опыт работы">
+                    <select class="bus" name="busyness">
                         <option>Полная занятость</option>
                         <option>Частичная занятость</option>
                         <option>Проектная работа</option>
                         <option>Волонтерство</option>
                         <option>Стажировка</option>
                     </select>
-                    <select name="chart">
+                    <select class="chart" name="chart">
                         <option>полный день</option>
                         <option>сменный график</option>
                         <option>гибкий график</option>
                         <option>удаленная работа</option>
                         <option>вахтовый метод</option>
                     </select>
-                    <input name='2' type="submit">
+                    <input name='2' class="two" type="submit">
                 </form>
 
                 {% for i in range(0, len_jobs,6)%}
-                    <div>
-                        <p>Блок: {{ i / 6}}</p>
+                    <div class="div">
                         <p>Вакансия: {{ data[i][1] }}</p>
                         <p>Зарпалата: {{ data[i+1][1] }}</p>
                         <p>Опыт работы: {{ data[i+2][1] }}</p>
@@ -50,7 +50,7 @@
             {% endif%}
             {% if two == 'Отправить' %}
                 {% for i in range(id) %}
-                    <div>
+                    <div class="div">
                         <p>Вакансия: {{ name_list[i] }}</p>
                         <p>Зарпалата: {{ salary_list[i] }}</p>
                         <p>Опыт работы: {{ experience_list[i] }}</p>

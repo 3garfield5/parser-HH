@@ -1,8 +1,4 @@
-from sweater import db, app
-
-# with app.app_context():
-#     db.drop_all()
-#     db.create_all()
+from sweater import app
 
 if __name__ == '__main__':
     app.run(debug=True)

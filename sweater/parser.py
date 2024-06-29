@@ -1,9 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 
-
 from sweater import ua
 
+# функция получения ссылок с hh
 def get_links(text):
     data = requests.get(
         url = f'https://hh.ru/search/vacancy?text={text}&salary=&ored_clusters=true&area=113&page=1&customDomain=1',
@@ -32,7 +32,7 @@ def get_links(text):
         except Exception as e:
             print(f'{e}')
 
-
+# функция получения данных вакансии с ссылок
 def get_job(link):
     data = requests.get(
         url=link,
@@ -53,7 +53,6 @@ def get_job(link):
         exp = soup.find(attrs={"data-qa": "vacancy-experience"}).getText()
         if '–' in exp:
             exp = exp.split(' ')[0]
-
     except:
         exp = 'Данные отсутсвуют'
     try:

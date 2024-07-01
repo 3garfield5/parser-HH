@@ -84,8 +84,10 @@ def job_search():
                         id_del.append(i+1)
 
                 if skills != '': # проверка на пустоту
-                    if skills not in skills_list[i]:
-                        id_del.append(i + 1)
+                    skills_fil = list(skills.split(', '))
+                    for k in range(len(skills_fil)):
+                        if skills_fil[k] not in skills_list[i]:
+                            id_del.append(i + 1)
 
                 if work_exp != 'Опыт работы': # проверка на пустоту
                     if work_exp not in experience_list[i]:

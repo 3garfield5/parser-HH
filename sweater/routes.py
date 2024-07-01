@@ -7,6 +7,9 @@ from sweater.models import Vacancy
 
 @app.route('/')
 def index():
+    with app.app_context():
+        db.drop_all()  # очистка БД
+        db.create_all()  # создание новой таблицы БД
     return render_template('index.html')
 
 @app.route('/job_search', methods=['POST', 'GET'])
@@ -35,8 +38,9 @@ def job_search():
                 break
         len_jobs = len(data)
 
+
         #добавление данных в бд
-        for i in range(0, len_jobs, 6):
+        for i in range(0, len_jobs, 7):
             name = data[i][1]
 
             salary = data[i+1][1]
@@ -49,7 +53,9 @@ def job_search():
 
             address = data[i+5][1]
 
-            vac = Vacancy(name=name, salary=salary, work_experience=work_experience, chart=charts, skills=ski, address=address)
+            link = data[i+6][1]
+
+            vac = Vacancy(name=name, salary=salary, work_experience=work_experience, chart=charts, skills=ski, address=address, link=link)
             db.session.add(vac)
             db.session.commit()
 
@@ -70,9 +76,9 @@ def job_search():
             # создаем списки, где лежат данные из БД, чтобы их отфильтровать
 
             # фильтр
-            work_experience_f = []
             id_del = [] # создаем список, где будут лежать айдишки вакансий, которые нужно убрать при фильтрации
             for i in range(len(id)):
+
                 if region != '': # проверка на пустоту
                     if region != region_list[i]:
                         id_del.append(i+1)
@@ -81,17 +87,20 @@ def job_search():
                     if skills not in skills_list[i]:
                         id_del.append(i + 1)
 
-                if work_exp != '': # проверка на пустоту
-                    if '–' in experience_list[i]:
-                        for j in range(int(experience_list[i][0]), int(experience_list[i][2])):
-                            work_experience_f.append(j)
-                        if int(work_exp) not in work_experience_f:
-                            id_del.append(i + 1)
-
-                if chart != '': # проверка на пустоту
-                    chart_list[i] = list(chart_list[i].split(', '))
-                    if (busyness not in chart_list[i][0]) or (chart not in chart_list[i][1]):
+                if work_exp != 'Опыт работы': # проверка на пустоту
+                    if work_exp not in experience_list[i]:
                         id_del.append(i + 1)
+
+                chart_list[i] = list(chart_list[i].split(', '))
+
+                if busyness != 'Занятость': # проверка на пустоту
+                    if busyness not in chart_list[i][0]:
+                        id_del.append(i + 1)
+                if chart != 'График':
+                    if chart not in chart_list[i][1]:
+                        id_del.append(i + 1)
+
+
             id_del = set(id_del) # делаем из списка множество, чтобы убрать повторы
 
             # удаляем ненужные вакансии
@@ -103,19 +112,23 @@ def job_search():
             # получаем из БД оставшиеся вакансии, чтобы вывести их на страницу
             db_data_filt = db.session.query(Vacancy)
 
-            id = list(map(lambda x: x.id, db_data_filt))
+            id_f = list(map(lambda x: x.id, db_data_filt))
             name_list = list(map(lambda x: x.name, db_data_filt))
             salary_list = list(map(lambda x: x.salary, db_data_filt))
             region_list = list(map(lambda x: x.address, db_data_filt))
             skills_list = list(map(lambda x: x.skills, db_data_filt))
             experience_list = list(map(lambda x: x.work_experience, db_data_filt))
             chart_list = list(map(lambda x: x.chart, db_data_filt))
+            link_list = list(map(lambda x: x.link, db_data_filt))
 
-            db.drop_all()  # очистка БД
-            db.create_all()  # создание новой таблицы БД
+            with app.app_context():
+                db.drop_all()  # очистка БД
+                db.create_all()  # создание новой таблицы БД
 
             return render_template('job_search.html', name_list=name_list, salary_list=salary_list, region_list=region_list, \
-                                   skills_list=skills_list, experience_list=experience_list, chart_list=chart_list, id=len(id), one=one, two=two)
+                                   skills_list=skills_list, experience_list=experience_list, chart_list=chart_list, id=len(id), one=one, two=two, \
+                                   id_f=len(id_f), count=count, link=link_list)
+
         return render_template('job_search.html', data=data, count=count, len_jobs=len_jobs, one=one, two=two)
 
     return render_template('job_search.html')

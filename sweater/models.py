@@ -8,3 +8,4 @@ class Vacancy(db.Model):
     chart = db.Column(db.String(100), nullable=True, unique=False)
     skills = db.Column(db.String(100), nullable=True, unique=False)
     address = db.Column(db.String(100), nullable=True, unique=False)
+    link = db.Column(db.String(100), nullable=True, unique=False)

@@ -6,59 +6,88 @@
     <link rel="stylesheet" href="static/style/job.css">
 </head>
 <body>
-    <div>
-        <form method="post">
-            <input type="text" class="input" name="job" placeholder="Название должности">
-            <input name="1" class="one" type="submit">
-        </form>
-    </div>
-    <a href="/" class="button">Вернуться на главную</a>
+    {% if one != 'Отправить' and two != 'Отправить'%}
+        <div>
+            <form method="post">
+                <input type="text" class="input" name="job" placeholder="Название должности">
+                <input name="1" class="one" type="submit">
+            </form>
+        </div>
+        <a href="/" class="button">Вернуться на главную</a>
+        <p class="text">Чтобы воспользовать моим сервисом, вам нужно написать название профессии, для которой вы хотите найти вакансии на HH, но будьте внимательнее, нельзя ошибаться, так как возникнет ошибка! Также нужно немного подождать, так как парсинг дело не быстрое! По стандарту выводится 20 вакансий</p>
+
+    {% endif %}
     <div>
         {% if request.method == 'POST' %}
             {% if one == 'Отправить'%}
-                 <form method="post">
-                    <input type="text" class="region" name="region" placeholder="Регион">
-                    <input type="text" class="skills" name="skills" placeholder="Навыки">
-                    <input type="text" class="work_exp" name="work exp" placeholder="Опыт работы">
-                    <select class="bus" name="busyness">
-                        <option>Полная занятость</option>
-                        <option>Частичная занятость</option>
-                        <option>Проектная работа</option>
-                        <option>Волонтерство</option>
-                        <option>Стажировка</option>
-                    </select>
-                    <select class="chart" name="chart">
-                        <option>полный день</option>
-                        <option>сменный график</option>
-                        <option>гибкий график</option>
-                        <option>удаленная работа</option>
-                        <option>вахтовый метод</option>
-                    </select>
-                    <input name='2' class="two" type="submit">
-                </form>
-
-                {% for i in range(0, len_jobs,6)%}
-                    <div class="div">
-                        <p>Вакансия: {{ data[i][1] }}</p>
-                        <p>Зарпалата: {{ data[i+1][1] }}</p>
-                        <p>Опыт работы: {{ data[i+2][1] }}</p>
-                        <p>График: {{ data[i+3][1] }}</p>
-                        <p>Скилы: {{ data[i+4][1] }}</p>
-                        <p>Регион: {{ data[i+5][1] }}</p>
-                    </div>
-                {% endfor %}
-            {% endif%}
+                {% if count == 0 %}
+                    <p class="text">Извините, произошла ошибка! Пожалуйста вернитесь на главую страницу и попробуйте снова!</p>
+                    <a href="/" class="button">Вернуться на главную</a>
+                {% else%}
+                    <p class="text">Здесь вы можете отфильтровать все вакансии, которые были найдены. Для этого введите те или иные параметры! Также все вакансии кликабельны, нажав на которые, вас перекинет на вакансию на HH.</p>
+                     <form method="post">
+                        <input type="text" class="region" name="region" placeholder="Регион">
+                        <input type="text" class="skills" name="skills" placeholder="Навыки">
+                         <select class="work_exp" name="work exp">
+                             <option>Опыт работы</option>
+                             <option>не требуется</option>
+                             <option>1–3 года</option>
+                             <option>3–6 лет</option>
+                             <option>более 6 лет</option>
+                         </select>
+                        <select class="bus" name="busyness">
+                            <option>Занятость</option>
+                            <option>Полная занятость</option>
+                            <option>Частичная занятость</option>
+                            <option>Проектная работа</option>
+                            <option>Волонтерство</option>
+                            <option>Стажировка</option>
+                        </select>
+                        <select class="chart" name="chart">
+                            <option>График</option>
+                            <option>полный день</option>
+                            <option>сменный график</option>
+                            <option>гибкий график</option>
+                            <option>удаленная работа</option>
+                            <option>вахтовый метод</option>
+                        </select>
+                        <input name='2' class="two" type="submit">
+                        <a href="/" class="button">Вернуться на главную</a>
+                    </form>
+                    {% for i in range(0, len_jobs, 7)%}
+                        <a href={{data[i+6][1]}}>
+                            <div class="div">
+                                <p>Вакансия: {{ data[i][1] }}</p>
+                                <p>Зарпалата: {{ data[i+1][1] }}</p>
+                                <p>Опыт работы: {{ data[i+2][1] }}</p>
+                                <p>График: {{ data[i+3][1] }}</p>
+                                <p>Скилы: {{ data[i+4][1] }}</p>
+                                <p>Регион: {{ data[i+5][1] }}</p>
+                            </div>
+                        </a>
+                    {% endfor %}
+                {% endif%}
+            {% endif %}
             {% if two == 'Отправить' %}
-                {% for i in range(id) %}
-                    <div class="div">
-                        <p>Вакансия: {{ name_list[i] }}</p>
-                        <p>Зарпалата: {{ salary_list[i] }}</p>
-                        <p>Опыт работы: {{ experience_list[i] }}</p>
-                        <p>График: {{ chart_list[i] }}</p>
-                        <p>Скилы: {{ skills_list[i] }}</p>
-                        <p>Регион: {{ region_list[i] }}</p>
-                    </div>
-                {% endfor %}
+                {% if id_f == 0 %}
+                    <p class="text">Таких вакансий нет!</p>
+                    <a href="/" class="button">Вернуться на главную</a>
+                {% else %}
+                    {% for i in range(id_f) %}
+                        <a href={{ link[i] }}>
+                            <div class="div">
+                                <p>Вакансия: {{ name_list[i] }}</p>
+                                <p>Зарпалата: {{ salary_list[i] }}</p>
+                                <p>Опыт работы: {{ experience_list[i] }}</p>
+                                <p>График: {{ chart_list[i] }}</p>
+                                <p>Скилы: {{ skills_list[i] }}</p>
+                                <p>Регион: {{ region_list[i] }}</p>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    <p class="text">Спасибо, что воспользовались моим сервисом для парсинга вакансий! Чтобы сделать это еще раз, вернитесь на главную страницу и найдите новые вакансии!</p>
+                    <a href="/" class="button">Вернуться на главную</a>
+                {% endif %}
             {% endif %}
         {% endif %}
     </div>

@@ -44,21 +44,19 @@ def get_job(link):
     try:
         name = soup.find(attrs={'data-qa': 'vacancy-title'}).getText()
     except:
-        name = 'Данные отсутсвуют'
+        name = 'Данные отсутствуют'
     try:
         salary = soup.find(attrs={'class': 'magritte-text___pbpft_3-0-9 magritte-text_style-primary___AQ7MW_3-0-9 magritte-text_typography-label-1-regular___pi3R-_3-0-9'}).getText().replace("\xa0", '')
     except:
-        salary = 'Данные отсутсвуют'
+        salary = 'Данные отсутствуют'
     try:
         exp = soup.find(attrs={"data-qa": "vacancy-experience"}).getText()
-        if '–' in exp:
-            exp = exp.split(' ')[0]
     except:
-        exp = 'Данные отсутсвуют'
+        exp = 'Данные отсутствуют'
     try:
         chart = soup.find(attrs={'data-qa': 'vacancy-view-employment-mode'}).getText()
     except:
-        chart = 'Данные отсутсвуют'
+        chart = 'Данные отсутствуют'
     try:
         skills = [skill.text for skill in soup.find(attrs={'class': 'vacancy-skill-list--COfJZoDl6Y8AwbMFAh5Z'}).find_all(attrs={'class': 'magritte-tag__label___YHV-o_3-0-0'})]
         ski = ''
@@ -69,11 +67,11 @@ def get_job(link):
             ski = ski + skills[i] + ', '
         ski = ski[:-2]
     except:
-        ski = 'Данные отсутсвуют'
+        ski = 'Данные отсутствуют'
     try:
         address = soup.find(attrs={'data-qa': 'vacancy-view-raw-address'}).getText().split(',')[0]
     except:
-        address = 'Данные отсутсвуют'
+        address = 'Данные отсутствуют'
 
     resume = {
         'name': name,
@@ -81,7 +79,8 @@ def get_job(link):
         'work experience': exp,
         'chart': chart,
         'skills': ski,
-        'address': address
+        'address': address,
+        'link': link
     }
     return resume
 

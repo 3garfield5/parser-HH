@@ -6,12 +6,3 @@ services:
     build: .
     ports:
       - "5000:5000"
-
-  db:
-    container_name: sqlite-db
-    build: .
-    volumes:
-      - ./app:/db
-    environment:
-      - DATABASE_CLIENT = sqlite
-      - DATABASE_FILENAME = ./instance/web-site.db

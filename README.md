@@ -1,5 +1,7 @@
 Web-сервис для парсинга вакансий с hh.ru
 
+*возможно не работает на некоторых бразуерах
+
 ## Instalation
 ```
 pip install -r requirements.txt
